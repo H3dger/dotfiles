@@ -2,6 +2,7 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
+
 config.launch_menu = {
   {
     label = 'PoserShell',
@@ -26,12 +27,16 @@ config.inactive_pane_hsb = {
   brightness = 0.8,
 }
 
+local bar = wezterm.plugin.require("https://github.com/adriankarlen/bar.wezterm")
+bar.apply_to_config(config)
+
+
+
 -- 设置字体和窗口大小
-config.font = wezterm.font("更纱终端书呆黑体-简")
-config.font_size = 18
+config.font = wezterm.font("Maple Mono NF CN")
+config.font_size = 16
 config.initial_cols = 140
 config.initial_rows = 30
-
 -- 设置默认的启动shell
 
 -- COMSPEC 是 Windows 系统的一个重要环境变量，通常默认指向 cmd.exe。覆盖它可能导致其他应用程序启动时依赖 COMSPEC 的功能出现异常。
@@ -132,6 +137,8 @@ end)
 -- 设置窗口透明度
 config.window_background_opacity = 0.9
 -- config.macos_window_background_blur = 10
+
+
 
 
 return config
