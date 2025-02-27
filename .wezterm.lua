@@ -27,13 +27,91 @@ config.inactive_pane_hsb = {
   brightness = 0.8,
 }
 
-local bar = wezterm.plugin.require("https://github.com/adriankarlen/bar.wezterm")
-bar.apply_to_config(config)
+-- Tab bar
+-- I don't like the look of "fancy" tab bar
+config.use_fancy_tab_bar = false
+config.status_update_interval = 1000
+config.tab_bar_at_bottom = false
+wezterm.on("update-status", function(window, pane)
+  -- Workspace name
+  local stat = window:active_workspace()
+  local stat_color = "#f7768e"
+  -- It's a little silly to have workspace name all the time
+  -- Utilize this to display LDR or current key table name
+  if window:active_key_table() then
+    stat = window:active_key_table()
+    stat_color = "#7dcfff"
+  end
+  if window:leader_is_active() then
+    stat = "LDR"
+    stat_color = "#bb9af7"
+  end
+
+  local basename = function(s)
+    -- Nothing a little regex can't fix
+    return string.gsub(s, "(.*[/\\])(.*)", "%2")
+  end
+
+  -- Current working directory
+  local cwd = pane:get_current_working_dir()
+  if cwd then
+    if type(cwd) == "userdata" then
+      -- Wezterm introduced the URL object in 20240127-113634-bbcac864
+      cwd = basename(cwd.file_path)
+    else
+      -- 20230712-072601-f4abf8fd or earlier version
+      cwd = basename(cwd)
+    end
+  else
+    cwd = ""
+  end
+
+  -- Current command
+  local cmd = pane:get_foreground_process_name()
+  -- CWD and CMD could be nil (e.g. viewing log using Ctrl-Alt-l)
+  cmd = cmd and basename(cmd) or ""
+
+  -- Time
+  local time = wezterm.strftime("%H:%M")
+
+  -- Left status (left of the tab line)
+  window:set_left_status(wezterm.format({
+    { Foreground = { Color = "#eba0ac" } },
+    { Text = " " },
+    { Text = wezterm.nerdfonts.oct_table .. " " .. stat },
+    { Text = " " },
+  }))
+
+  -- Right status
+  window:set_right_status(wezterm.format({
+    -- Wezterm has a built-in nerd fonts
+    -- https://wezfurlong.org/wezterm/config/lua/wezterm/nerdfonts.html
+    { Foreground = { Color = "#a6e3a1" } },
+    { Text = wezterm.nerdfonts.fa_code .. " " .. cmd },
+    "ResetAttributes",
+    { Text = " " },
+    { Foreground = { Color = "#74c7ec" } }, -- Catppuccin Mocha 蓝色
+    { Text = wezterm.nerdfonts.md_clock .. " " .. time },
+    { Text = " " },
+  }))
+end)
+
+config.tab_bar_at_bottom = true
+
+-- Appearance setting for when I need to take pretty screenshots
+
+
+
 
 
 
 -- 设置字体和窗口大小
-config.font = wezterm.font("Maple Mono NF CN")
+config.font = wezterm.font_with_fallback {
+  'JetBrainsMono Nerd Font Mono',  -- 主要字体
+  'Noto Color Emoji',              -- 明确指定Emoji字体优先级
+  'Maple Mono NF CN',       -- 其他备选字体
+}
+
 config.font_size = 16
 config.initial_cols = 140
 config.initial_rows = 30
@@ -135,7 +213,7 @@ wezterm.on("gui-startup", function(cmd)
 end)
 
 -- 设置窗口透明度
-config.window_background_opacity = 0.9
+config.window_background_opacity = 0.96
 -- config.macos_window_background_blur = 10
 
 
