@@ -1,15 +1,10 @@
 add_newline = false
-# A minimal left prompt
-format = """$directory$character"""
+# A minimal left prompt with conda environment
+format = """$conda$directory$character"""
 palette = "catppuccin_mocha"
-# move the rest of the prompt to the right
-right_format = """$time $all"""
+# move the rest except conda to the right
+right_format = """$all"""
 command_timeout = 1000
-
-[time]
-disabled = false
-format = "[$time]($style) "  # 时间格式，显示小时、分钟和秒
-style = "pink"                       # 时间的样式
 
 [username]
 disabled = true
@@ -47,6 +42,27 @@ contexts = [
 
 [docker_context]
 disabled = true
+
+[python]
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+symbol = "🐍 "
+style = "bold green"
+
+[rlang]
+format = '[${symbol}(${version} )]($style)'
+symbol = "📊 "
+style = "blue bold"
+
+[conda]
+format = '[$symbol$environment]($style) '
+symbol = "🧬 "
+style = "green bold"
+
+[jobs]
+format = '[$symbol$number]($style) '
+symbol = "⚙️ "
+style = "bold blue"
+
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
