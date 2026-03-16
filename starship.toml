@@ -1,10 +1,14 @@
 add_newline = false
 # A minimal left prompt with conda environment
-format = """$conda$directory$character"""
+format = """$pixi$directory$character"""
 palette = "catppuccin_mocha"
 # move the rest except conda to the right
-right_format = """$all"""
+right_format = """$cmd_duration$all"""
 command_timeout = 1000
+
+[cmd_duration]
+format = "[$duration]($style) "
+min_time = 2000
 
 [username]
 disabled = true
@@ -20,19 +24,19 @@ success_symbol = '[➜](bold green)'
 '~/tests/starship-custom' = 'work-project'
 
 [git_branch]
-format =  '[$symbol$branch(:$remote_branch)]($style)'
+format = '[$symbol$branch(:$remote_branch)]($style)'
 
 [aws]
 format = '[$symbol(profile: "$profile" )(\(region: $region\) )]($style)'
 disabled = false
 style = 'bold blue'
-symbol = " "
+symbol = "☁  "
 
 [golang]
-format = '[ ](bold cyan)'
+format = '[🐹 ](bold cyan)'
 
 [kubernetes]
-symbol = '☸ '
+symbol = '🌏 '
 disabled = true
 detect_files = ['Dockerfile']
 format = '[$symbol$context( \($namespace\))]($style) '
@@ -47,20 +51,23 @@ disabled = true
 format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
 symbol = "🐍 "
 style = "bold green"
+detect_extensions = ["pyproject.toml", "requirements.txt", "setup.py", "Pipfile", "pixi.toml"]
+
 
 [rlang]
 format = '[${symbol}(${version} )]($style)'
 symbol = "📊 "
 style = "blue bold"
 
-[conda]
-format = '[$symbol$environment]($style) '
-symbol = "🧬 "
-style = "green bold"
+
+[pixi]
+format = '[$symbol$environment](yellow) '
+show_default_environment = false
+
 
 [jobs]
 format = '[$symbol$number]($style) '
-symbol = "⚙️ "
+symbol = "🛎 "
 style = "bold blue"
 
 
